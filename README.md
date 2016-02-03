@@ -9,6 +9,7 @@ A small module I was working on for a friend's project that allows (very) basic 
 - [ ] Events
 - [ ] Notifications
 - [ ] A lot more...
+
 # Usage
 Starting usage
 ```
