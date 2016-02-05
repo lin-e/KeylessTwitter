@@ -5,9 +5,10 @@ A small module I was working on for a friend's project that allows (very) basic 
 - [x] Sending simple tweets
 - [x] Sending tweets with media
 - [x] Sending tweets with more than one image (media item)
-- [ ] Direct Messages
+- [x] Direct Messages
 - [ ] Events
 - [ ] Notifications
+- [x] Following / Unfollowing
 - [ ] A lot more...
 
 # Usage
@@ -28,4 +29,9 @@ mainTwitter.TweetImage(new WebClient().DownloadData("http://example.com/my_twitt
 Tweeting images (by URLs)
 ```
 mainTwitter.TweetImages(new byte[][] { new WebClient().DownloadData("http://example.com/my_twitter_picture.jpg"), new WebClient().DownloadData("http://example.com/my_other_picture.jpg") }, "Check out these images!"); // Tweets from the specified URLs
+```
+Follow / Unfollow a user
+```
+mainTwitter.Follow("c0mmodity"); // Follows me (shameless plug)
+mainTwitter.Unfollow("c0mmodity"); // Unfollows specified user
 ```
