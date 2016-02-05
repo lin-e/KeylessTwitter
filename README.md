@@ -27,5 +27,5 @@ mainTwitter.TweetImage(new WebClient().DownloadData("http://example.com/my_twitt
 ```
 Tweeting images (by URLs)
 ```
-mainTwitter.TweetImage(new byte[][] { new WebClient().DownloadData("http://example.com/my_twitter_picture.jpg"), new WebClient().DownloadData("http://example.com/my_other_picture.jpg") }, "Check out these images!"); // Tweets from the specified URLs
+mainTwitter.TweetImages(new byte[][] { new WebClient().DownloadData("http://example.com/my_twitter_picture.jpg"), new WebClient().DownloadData("http://example.com/my_other_picture.jpg") }, "Check out these images!"); // Tweets from the specified URLs
 ```
