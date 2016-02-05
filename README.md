@@ -6,7 +6,8 @@ A small module I was working on for a friend's project that allows (very) basic 
 - [x] Sending tweets with media
 - [x] Sending tweets with more than one image (media item)
 - [x] Direct Messages
-- [ ] Events
+- [x] DM Received Event
+- [ ] New Tweet Event
 - [ ] Notifications
 - [x] Following / Unfollowing
 - [ ] A lot more...
@@ -16,6 +17,7 @@ Starting usage
 ```
 Twitter mainTwitter = new Twitter("USERNAME", "PASSWORD"); // Creates a new Twitter with the specified credentials
 mainTwitter.tryLogin(); // Logs in to the Twitter account (returns true or false depending on login status)
+mainTwitter.directMessage += MainTwitter_directMessage; // Optional event handler, which fires when the user receives a DM
 ```
 Sending a tweet
 ```
@@ -34,4 +36,12 @@ Follow / Unfollow a user
 ```
 mainTwitter.Follow("c0mmodity"); // Follows me (shameless plug)
 mainTwitter.Unfollow("c0mmodity"); // Unfollows specified user
+```
+DM Event Example
+```
+private static void MainTwitter_directMessage(string conversationID, string messageContents) // Auto generated
+{
+    Console.WriteLine("{0}: {1}", conversationID, messageContents); // Outputs the message and its conversation ID
+    mainTwitter.SendMessage_ID(conversationID, messageContents); // Replies with the same message (using Twitter.SendMessage_ID)
+}
 ```
