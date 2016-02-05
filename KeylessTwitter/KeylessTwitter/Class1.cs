@@ -5,20 +5,26 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Web;
+using Newtonsoft.Json;
 namespace KeylessTwitter
 {
     public class Twitter
     {
+        public delegate void TwitterMessageReceived(string conversationID, string messageContents);
+        public event TwitterMessageReceived directMessage;
         public string authUsername;
         public string authPassword;
         public TwitterAuthStatus twitterStatus = TwitterAuthStatus.Unknown;
         string authenticityToken;
+        bool directMessageEvents;
         CookieContainer mainContainer = new CookieContainer();
-        public Twitter(string loginUser, string loginPass)
+        public Twitter(string loginUser, string loginPass, bool useDM = true)
         {
             authUsername = loginUser;
             authPassword = loginPass;
+            directMessageEvents = useDM;
         }
         public bool tryLogin()
         {
@@ -59,6 +65,10 @@ namespace KeylessTwitter
                     }
                 }
                 twitterStatus = TwitterAuthStatus.Success;
+                if (directMessageEvents)
+                {
+                    checkForNewMessage();
+                }
                 return true;
             }
             catch
@@ -66,6 +76,39 @@ namespace KeylessTwitter
                 twitterStatus = TwitterAuthStatus.Failed;
                 return false;
             }
+        }
+        private void checkForNewMessage()
+        {
+            new Thread(() =>
+            {
+                string currentCursor = "";
+                while (true)
+                {
+                    try
+                    {
+                        string rawJSON = "";
+                        HttpWebRequest webRequest = createWebRequest_GET("https://twitter.com/i/direct_messages/user_updates?cursor=" + currentCursor, new string[][] { }, "");
+                        using (HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse())
+                        {
+                            rawJSON = new StreamReader(webResponse.GetResponseStream()).ReadToEnd();
+                        }
+                        dynamic allData = JsonConvert.DeserializeObject(rawJSON);
+                        if (allData.is_empty.ToString() != "True")
+                        {
+                            foreach (dynamic singleMessage in allData.notifications)
+                            {
+                                if (currentCursor != "")
+                                {
+                                    directMessage.Invoke((string)singleMessage.conversation_id, (string)singleMessage.body);
+                                }
+                            }
+                        }
+                        currentCursor = allData.inbox_updates.cursor;
+                    }
+                    catch { }
+                    Thread.Sleep(1000);
+                }
+            }).Start();
         }
         public void Tweet(string toTweet)
         {
@@ -162,6 +205,27 @@ namespace KeylessTwitter
                     }
                 }
             }
+            if (true)
+            {
+                try
+                {
+                    HttpWebRequest webRequest = createWebRequest_POST("https://twitter.com/i/direct_messages/new", new string[][] { }, Encoding.ASCII.GetBytes(
+                    string.Format("authenticity_token={0}&conversation_id={2}&scribeContext%5Bcomponent%5D=tweet_box_dm&tagged_users=&text={1}", authenticityToken, HttpUtility.UrlEncode(messageContents), conversationID)), "application/x-www-form-urlencoded", true);
+                    using (HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse()) { }
+                }
+                catch
+                {
+                    throw new InvalidTwitterActionException("You may not be able to DM this user");
+                }
+            }
+        }
+        public void SendMessage_ID(string conversationID, string messageContents)
+        {
+            if (twitterStatus != TwitterAuthStatus.Success)
+            {
+                throw new InvalidTwitterActionException("You are not signed in");
+            }
+            conversationID = conversationID.Split('-')[1] + "-" + conversationID.Split('-')[0];
             if (true)
             {
                 try
