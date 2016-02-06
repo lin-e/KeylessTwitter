@@ -19,8 +19,8 @@ A small module I was working on for a friend's project that allows (very) basic 
 Starting usage
 ```
 Twitter mainTwitter = new Twitter("USERNAME", "PASSWORD"); // Creates a new Twitter with the specified credentials
-mainTwitter.tryLogin(); // Logs in to the Twitter account (returns true or false depending on login status)
 mainTwitter.directMessage += MainTwitter_directMessage; // Optional event handler, which fires when the user receives a DM
+mainTwitter.tryLogin(); // Logs in to the Twitter account (returns true or false depending on login status)
 ```
 Sending a tweet
 ```
