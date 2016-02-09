@@ -1,0 +1,4 @@
+- [ ] Add an event for new tweets
+- [ ] Add an event for notifications (mentions, RTs, etc.)
+- [ ] Create a class for conversations
+- [ ] Explore conversations further
