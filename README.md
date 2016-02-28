@@ -2,7 +2,7 @@
 A small module I was working on for a friend's project that allows (very) basic interaction with Twitter without using an API key
 # Dependencies
 - [Json.NET] (http://www.newtonsoft.com/json)
-- 
+
 # Features
 - [x] Signing in
 - [x] Sending simple tweets
